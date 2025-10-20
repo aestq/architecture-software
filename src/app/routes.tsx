@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { App } from "./App";
-import { CharactersPage } from "@/pages/CharactersPage";
-import { FavoritesPage } from "@/pages/FavoritesPage";
+import { CharactersPage } from "@/pages/CharactersPage/CharactersPage.tsx";
+import { FavoritesPage } from "@/pages/FavoritesPage/FavoritesPage.tsx";
 
 export const router = createBrowserRouter([
   {
