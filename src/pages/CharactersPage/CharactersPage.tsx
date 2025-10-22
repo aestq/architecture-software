@@ -1,41 +1,37 @@
-import { useCharacters } from "@/entities/character/model/useCharacters.ts";
-import { useFavorites } from "@/entities/character/model/useFavorites.ts";
-import { SearchBar } from "@/pages/CharactersPage/ui/SearchBar.tsx";
-import { CharacterList } from "@/entities/character/ui/CharacterList.tsx";
-import {CharacterApiRepository} from "@/entities/character/repository/characterApiRepository.ts";
-import {LocalStorageRepository} from "@/shared/lib/storages/localStorageRepository.ts";
-import {useMemo} from "react";
+import {SearchBar} from "@/pages/CharactersPage/ui/SearchBar.tsx";
+import {CharacterList} from "@/entities/character/ui/CharacterList.tsx";
 import {CharacterCard} from "@/entities/character/ui/CharacterCard.tsx";
 import {CharacterFavoriteButton} from "@/entities/character/ui/CharacterFavoriteButton.tsx";
+import {useCharacterContext} from "@/entities/character/store/createCharacterProvider.tsx";
 
 export function CharactersPage() {
-  const { query, setQuery, characterAsync } = useCharacters({
-      repository: useMemo(() => new CharacterApiRepository(), [])
-  })
-  const { isFavorite, toggleFavorite } = useFavorites({
-      storage: useMemo(() => new LocalStorageRepository(), [])
-  });
-
-  const items = characterAsync.data?.data?.results ?? []
+  const {
+      query,
+      error,
+      characters,
+      toggleCharacterFavorite,
+      isLoading,
+      onChangeQuery
+  } = useCharacterContext()
 
   return (
     <div className="p-4">
       <div className="mb-4">
-        <SearchBar value={query} onChange={setQuery} loading={characterAsync.isLoading} />
+        <SearchBar value={query} onChange={onChangeQuery} loading={isLoading} />
       </div>
 
-      {characterAsync.error && <div className="text-red-600">Error: {characterAsync.error.message}</div>}
+      {error && <div className="text-red-600">Error: {error.message}</div>}
 
       <CharacterList
-        items={items}
+        items={characters}
         renderItem={(character) => (
             <CharacterCard
                 character={character}
                 key={character.id}
                 favoriteButton={
                     <CharacterFavoriteButton
-                        onToggleFavorite={() => toggleFavorite(character)}
-                        favorite={isFavorite(character.id)}
+                        onToggleFavorite={() => toggleCharacterFavorite(character.id)}
+                        favorite={character.isFavorite}
                     />
                 }
             />

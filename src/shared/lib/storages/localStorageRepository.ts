@@ -24,5 +24,3 @@ export class LocalStorageRepository implements StorageRepository {
         localStorage.removeItem(key)
     }
 }
-
-export const localStorageRepository = new LocalStorageRepository()

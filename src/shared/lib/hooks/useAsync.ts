@@ -1,6 +1,7 @@
 import type { DependencyList } from 'react';
 
 import { useEffect, useState } from 'react';
+import type {SetState} from "@/shared/lib/types/react.ts";
 
 /* The use query return type */
 export interface UseAsyncReturn<Data> {
@@ -12,6 +13,8 @@ export interface UseAsyncReturn<Data> {
     isError: boolean;
     /* The loading state of the query */
     isLoading: boolean;
+    /* set state the query */
+    setData: SetState<Optional<Data>>
 }
 
 /**
@@ -58,6 +61,7 @@ export const useAsync = <Data>(
         data,
         isLoading,
         isError,
-        error
+        error,
+        setData
     };
 };

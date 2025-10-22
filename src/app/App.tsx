@@ -1,13 +1,8 @@
-import { Outlet } from "react-router-dom";
-import {NavBar} from "./layout/NavBar";
+import {RouterProvider} from "react-router-dom";
+import {setupRouter} from "@/app/compositionRoot/setupRouter.tsx";
+
+const router = setupRouter()
 
 export function App() {
-  return (
-    <div className="min-h-screen">
-      <NavBar />
-      <main className="container mx-auto">
-        <Outlet />
-      </main>
-    </div>
-  );
+  return <RouterProvider router={router} />
 }
