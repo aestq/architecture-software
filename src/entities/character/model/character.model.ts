@@ -1,61 +1,44 @@
-import type {CharacterDTO} from "@/shared/dto/characters.ts";
-import type {Character} from "@/entities/character/model/character.ts";
-import type {Optional} from "@/shared/lib/types/global";
+import type { CharactersDTO } from '@/shared/dto/characters.ts'
+import type { Character } from '@/entities/character/model/character.ts'
 
 export class CharacterModel {
-    syncWithFavorites(characters: Optional<Character[]>, favoriteIds: number[]) {
-        if(!characters) {
-            return []
-        }
+    constructor() {}
 
-        return characters.map(character => ({
+    characters: Character[] = []
+
+    public setCharacters(characters: Character[]) {
+        this.characters = characters
+    }
+
+    public toggleCharacter(id: Character['id']) {
+        this.characters = this.characters.map((character) =>
+            character.id === id ? { ...character, isFavorite: !character.isFavorite } : character
+        )
+
+        return this.characters
+    }
+
+    public clearCharacters() {
+        this.characters = this.characters.map((character) => ({
             ...character,
-            isFavorite: favoriteIds.includes(character.id),
-        }))
-    }
-
-    getFavorites(characters: Optional<Character[]>) {
-        if(!characters) {
-            return []
-        }
-
-        return characters.filter(character => character.isFavorite)
-    }
-
-    clearFavorites(characters: Optional<Character[]>) {
-        if(!characters) {
-            return []
-        }
-
-        return characters.map(character => ({ ...character, isFavorite: false }))
-    }
-
-    toggleFavorite(characters: Optional<Character[]>, id: Character['id']) {
-        if(!characters) {
-            return []
-        }
-
-        return characters.map((character) => {
-            if(character.id !== id) {
-                return character
-            }
-
-            return {
-                ...character,
-                isFavorite: !character.isFavorite,
-            }
-        })
-    }
-
-
-    static dtoToCharacters(dto: CharacterDTO[]): Character[] {
-        return dto.map((character) => ({
             isFavorite: false,
-            id: character.id,
-            image: character.image,
-            name: character.name,
-            species: character.species,
-            status: character.status,
+        }))
+
+        return this.characters
+    }
+
+    public getFavoriteCharacters() {
+        return this.characters.filter((character) => character.isFavorite)
+    }
+
+    public static mapDtoToCharacter = (charactersDto: CharactersDTO): Character[] => {
+        return charactersDto.results.map((result) => ({
+            id: result.id,
+            name: result.name,
+            image: result.image,
+            status: result.status,
+            species: result.species,
+            isFavorite: false,
         }))
     }
 }

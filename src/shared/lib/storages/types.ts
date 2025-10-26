@@ -6,3 +6,10 @@ export interface StorageRepository {
     set<Payload = unknown>(key: string, payload: Payload): void
     remove(key: string): void
 }
+
+export interface CacheRepository<Data> {
+    get(key: string): Nullable<Awaited<Data>>
+    set(key: string, value: Awaited<Data>): void
+    has(key: string): boolean
+    clear(): void
+}

@@ -1,36 +1,44 @@
-import type {StorageRepository} from "@/shared/lib/storages/storageRepository.ts";
-import {
-    type CharacterFavoriteStorage,
-    createCharacterFavoritesStorage
-} from "@/entities/character/repository/createCharacterFavoritesStorage.ts";
-import type {Character} from "@/entities/character/model/character.ts";
+import type { Character } from '@/entities/character/model/character.ts'
+import type { FavoriteCharactersRepository } from '@/entities/character/repository/types.ts'
+import type { StorageRepository } from '@/shared/lib/storages/types.ts'
 
-const STORAGE_KEY = "character_favorites_v1";
+const FAVORITES_KEY = 'favorite-characters'
 
-export class CharacterFavoritesService {
-    private readonly storage: CharacterFavoriteStorage
+export class FavoritesCharactersStorage implements FavoriteCharactersRepository {
+    favorites: Character['id'][] = []
 
-    constructor(
-        private readonly storageRepository: StorageRepository
-    ) {
-        this.storage = createCharacterFavoritesStorage(this.storageRepository, STORAGE_KEY)
+    constructor(private readonly storage: StorageRepository) {
+        this.setInitialValue()
     }
 
-    getFavoriteIds() {
-        return this.storage.get()
+    getFavoriteCharacterIds() {
+        return this.storage.get<Character['id'][]>(FAVORITES_KEY) ?? []
     }
 
-    toggleFavorite(id: Character['id']) {
-        const ids = this.getFavoriteIds()
+    toggleFavorite(id: number) {
+        const favorites = this.favorites
 
-        if(ids.includes(id)) {
-            this.storage.remove(id)
+        if (this.isFavorite(id)) {
+            this.save(favorites.filter((element) => element !== id))
         } else {
-            this.storage.add(id)
+            this.save([...favorites, id])
         }
     }
 
-    clear() {
-        this.storage.clear()
+    clearFavorites() {
+        this.storage.remove(FAVORITES_KEY)
+    }
+
+    private save(value: Character['id'][]) {
+        this.favorites = value
+        this.storage.set(FAVORITES_KEY, value)
+    }
+
+    private isFavorite(id: Character['id']) {
+        return this.favorites.includes(id)
+    }
+
+    private setInitialValue() {
+        this.favorites = this.storage.get<Character['id'][]>(FAVORITES_KEY) ?? []
     }
 }

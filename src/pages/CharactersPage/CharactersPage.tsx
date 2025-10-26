@@ -1,29 +1,26 @@
-import {useCharacterContext} from "@/entities/character/store/createCharacterProvider.tsx";
-import {CharacterCatalog} from "@/features/characterCatalog/CharacterCatalog.tsx";
-import {type CharacterCatalogInjectorDeps, characterCatalogInjector} from "@/features/characterCatalog/di.ts";
+import { CharacterCatalog } from '@/features/characterCatalog/CharacterCatalog.tsx'
+import { characterCatalogInjector, type CharacterCatalogInjectorDeps } from '@/features/characterCatalog/di.ts'
+import { useCharactersStore } from '@/entities/character/store/useCharacters.store.ts'
 
 export function CharactersPage() {
-  const {
-      query,
-      error,
-      characters,
-      toggleCharacterFavorite,
-      isLoading,
-      onChangeQuery
-  } = useCharacterContext()
+    const {
+        characters,
+        isCharactersError,
+        isCharactersLoading,
+        actions: { fetchCharacters, toggleFavorite },
+    } = useCharactersStore((state) => state)
 
     const deps: CharacterCatalogInjectorDeps = {
-        onChangeQuery,
-        isLoading,
-        query,
-        error,
         characters,
-        toggleCharacterFavorite,
+        isCharactersError,
+        isCharactersLoading,
+        fetchCharacters,
+        toggleFavorite,
     }
 
-  return (
-      <characterCatalogInjector.Provider value={deps}>
-          <CharacterCatalog />
-      </characterCatalogInjector.Provider>
-  )
+    return (
+        <characterCatalogInjector.Provider value={deps}>
+            <CharacterCatalog />
+        </characterCatalogInjector.Provider>
+    )
 }

@@ -1,4 +1,4 @@
-import type {StorageRepository} from "@/shared/lib/storages/storageRepository.ts";
+import type {StorageRepository} from "@/shared/lib/storages/types.ts";
 
 export class LocalStorageRepository implements StorageRepository {
     get<Data>(key: string): Nullable<Data> {

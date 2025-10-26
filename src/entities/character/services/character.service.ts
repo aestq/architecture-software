@@ -1,20 +1,44 @@
-import type {CharacterRepository} from "@/entities/character/repository/characterRepository.ts";
-import {CharacterModel} from "@/entities/character/model/character.model.ts";
+import type { CharacterRepository, FavoriteCharactersRepository } from '../repository/types'
+import { CharacterModel } from '@/entities/character/model/character.model.ts'
 
-export class CharacterService {
+export class CharactersService {
     constructor(
-        private readonly repository: CharacterRepository
+        private readonly charactersRepo: CharacterRepository,
+        private readonly favoritesRepo: FavoriteCharactersRepository,
+        private readonly characterModel: CharacterModel
     ) {}
 
     async getCharacters(name: string = '') {
-        const response = await this.repository.fetchAllByName({
-            config: {
-                params: {
-                    name
-                }
-            }
-        })
+        const [{ data }, ids] = await Promise.all([
+            this.charactersRepo.fetchAllByName({
+                config: { params: { name } },
+            }),
+            this.favoritesRepo.getFavoriteCharacterIds(),
+        ])
 
-        return CharacterModel.dtoToCharacters(response.data.results)
+        const characters = CharacterModel.mapDtoToCharacter(data).map((character) => ({
+            ...character,
+            isFavorite: ids.includes(character.id),
+        }))
+
+        this.characterModel.setCharacters(characters)
+
+        return characters
+    }
+
+    public getFavoriteCharacters() {
+        return this.characterModel.getFavoriteCharacters()
+    }
+
+    public async toggleFavorite(id: number) {
+        await this.favoritesRepo.toggleFavorite(id)
+
+        return this.characterModel.toggleCharacter(id)
+    }
+
+    public async clearFavorites() {
+        await this.favoritesRepo.clearFavorites()
+
+        return this.characterModel.clearCharacters()
     }
 }
