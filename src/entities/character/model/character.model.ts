@@ -11,9 +11,12 @@ export class CharacterModel {
     }
 
     public toggleCharacter(id: Character['id']) {
-        this.characters = this.characters.map((character) =>
-            character.id === id ? { ...character, isFavorite: !character.isFavorite } : character
-        )
+        const index = this.characters.findIndex((character) => character.id === id)
+        const target = this.characters[index]
+
+        if (target) {
+            this.characters[index] = { ...target, isFavorite: !target.isFavorite }
+        }
 
         return this.characters
     }

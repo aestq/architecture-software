@@ -1,5 +1,5 @@
-import { createStore } from 'zustand'
 import type { Character } from '../model/character'
+import { createStore } from '@/shared/lib/createStore.ts'
 
 export type CharactersStoreState = {
     characters: Character[]
@@ -23,7 +23,7 @@ type Deps = {
 }
 
 export const createCharactersStore = ({ charactersService }: Deps) => {
-    return createStore<CharactersStoreState>((set) => ({
+    const store = createStore<CharactersStoreState>((set) => ({
         characters: [],
         isCharactersLoading: false,
         isCharactersError: false,
@@ -54,4 +54,8 @@ export const createCharactersStore = ({ charactersService }: Deps) => {
             },
         },
     }))
+
+    store.getState().actions.fetchCharacters()
+
+    return store
 }

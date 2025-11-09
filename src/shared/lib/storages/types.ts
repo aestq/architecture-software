@@ -8,8 +8,8 @@ export interface StorageRepository {
 }
 
 export interface CacheRepository<Data> {
-    get(key: string): Nullable<Awaited<Data>>
-    set(key: string, value: Awaited<Data>): void
+    get(key: string): Nullable<Data>
+    set(key: string, value: Data): void
     has(key: string): boolean
     clear(): void
 }

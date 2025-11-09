@@ -1,11 +1,15 @@
 import { CharacterList } from '@/entities/character/ui/CharacterList.tsx'
 import { CharacterCard } from '@/entities/character/ui/CharacterCard.tsx'
 import { CharacterFavoriteButton } from '@/entities/character/ui/CharacterFavoriteButton.tsx'
-import { useCharacterFavorites, useCharactersActions } from '@/entities/character/store/characters.selectors.ts'
+import { selectActions, selectFavorites } from '@/entities/character/store/characters.selectors.ts'
+import { getFeatureLocator } from '@/pages/FavoritesPage/useFeatureLocator.ts'
+import { useShallow } from 'zustand/react/shallow'
+
+const charactersStore = getFeatureLocator('CHARACTERS_STORE')
 
 export function FavoritesPage() {
-    const favorites = useCharacterFavorites()
-    const { clearFavorites, toggleFavorite } = useCharactersActions()
+    const favorites = charactersStore.use(useShallow(selectFavorites))
+    const { clearFavorites, toggleFavorite } = charactersStore.use(selectActions)
 
     return (
         <div className='p-4'>
@@ -17,9 +21,8 @@ export function FavoritesPage() {
                     </button>
                 )}
             </div>
-            <CharacterList
-                items={favorites}
-                renderItem={(character) => (
+            <CharacterList isEmpty={!favorites.length}>
+                {favorites.map((character) => (
                     <CharacterCard
                         character={character}
                         key={character.id}
@@ -30,8 +33,8 @@ export function FavoritesPage() {
                             />
                         }
                     />
-                )}
-            />
+                ))}
+            </CharacterList>
         </div>
     )
 }

@@ -7,7 +7,7 @@ import type { CharactersDTO } from '@/shared/dto/characters.ts'
 export class CharacterApiRepository implements CharacterRepository {
     private readonly ENDPOINT = '/character'
 
-    constructor(private readonly cache: CacheRepository<ApiResponse<CharactersDTO>>) {}
+    constructor(private readonly cache: CacheRepository<Awaited<ApiResponse<CharactersDTO>>>) {}
 
     async fetchAllByName(config?: RequestConfig) {
         const params = config?.config?.params ?? {}
