@@ -1,10 +1,9 @@
 import { createStrictContext } from '@/shared/lib/helpers/createStrictContext.ts'
 import { useStrictContext } from '@/shared/lib/hooks/useStrictContext.ts'
-import type { StoreApi } from '@/shared/lib/createStore.ts'
-import type { CharactersStoreState } from '@/entities/character/store/createCharacters.store.ts'
+import type { CharactersStore } from '@/entities/character/store/characters.store.ts'
 
 export interface CharacterCatalogInjectorDeps {
-    charactersStore: StoreApi<CharactersStoreState>
+    charactersStore: CharactersStore
 }
 
 export const characterCatalogInjector = createStrictContext<CharacterCatalogInjectorDeps>()

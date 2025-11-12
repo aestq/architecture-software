@@ -2,7 +2,7 @@ import { CharactersService } from '@/entities/character/services/character.servi
 import { InMemoryCache } from '@/shared/lib/storages/InMemoryCache.ts'
 import { FavoritesCharactersStorage } from '@/entities/character/services/characterFavorites.service.ts'
 import { LocalStorageRepository } from '@/shared/lib/storages/localStorageRepository.ts'
-import { createCharactersStore } from '@/entities/character/store/createCharacters.store.ts'
+import { CharactersStore } from '@/entities/character/store/characters.store.ts'
 import { CharacterModel } from '@/entities/character/model/character.model.ts'
 import { CharacterApiRepository } from '@/entities/character/repository/characterApiRepository.ts'
 import { Container } from '@/app/locator/container.ts'
@@ -14,9 +14,7 @@ const charactersService = new CharactersService(
 )
 
 export const container = new Container({
-    CHARACTERS_STORE: createCharactersStore({
-        charactersService,
-    }),
+    CHARACTERS_STORE: new CharactersStore(charactersService),
 } as const)
 
 export type ServiceKey = ReturnType<typeof container.getKeys>[number]

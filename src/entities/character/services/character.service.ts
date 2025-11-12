@@ -1,9 +1,12 @@
-import type { CharacterRepository, FavoriteCharactersRepository } from '../repository/types'
+import { signal } from '@preact/signals-react'
+import type { FavoriteCharactersRepository } from '../repository/types'
 import { CharacterModel } from '@/entities/character/model/character.model.ts'
+import type { CharacterApiRepository } from '@/entities/character/repository/characterApiRepository.ts'
+import type { Character } from '@/entities/character/model/character.ts'
 
 export class CharactersService {
     constructor(
-        private readonly charactersRepo: CharacterRepository,
+        private readonly charactersRepo: CharacterApiRepository,
         private readonly favoritesRepo: FavoriteCharactersRepository,
         private readonly characterModel: CharacterModel
     ) {}
@@ -18,27 +21,25 @@ export class CharactersService {
 
         const characters = CharacterModel.mapDtoToCharacter(data).map((character) => ({
             ...character,
-            isFavorite: ids.includes(character.id),
+            isFavorite: signal(ids.includes(character.id)),
         }))
-
-        this.characterModel.setCharacters(characters)
 
         return characters
     }
 
-    public getFavoriteCharacters() {
-        return this.characterModel.getFavoriteCharacters()
+    public getFavoriteCharacters(characters: Character[]) {
+        return this.characterModel.getFavoriteCharacters(characters)
     }
 
-    public async toggleFavorite(id: number) {
+    public async toggleFavorite(characters: Character[], id: number) {
         await this.favoritesRepo.toggleFavorite(id)
 
-        return this.characterModel.toggleCharacter(id)
+        return this.characterModel.toggleCharacterById(characters, id)
     }
 
-    public async clearFavorites() {
+    public async clearFavorites(characters: Character[]) {
         await this.favoritesRepo.clearFavorites()
 
-        return this.characterModel.clearCharacters()
+        return this.characterModel.clearCharacters(characters)
     }
 }

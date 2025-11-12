@@ -1,23 +1,24 @@
 import { useDI } from '@/features/characterCatalog/di.ts'
 import { CharacterCard } from '@/entities/character/ui/CharacterCard.tsx'
 import { CharacterFavoriteButton } from '@/entities/character/ui/CharacterFavoriteButton.tsx'
-import { selectActions, selectById } from '@/entities/character/store/characters.selectors.ts'
+import type { Character } from '@/entities/character/model/character.ts'
 
 interface CatalogCardProps {
-    characterId: number
+    character: Character
 }
 
 export const CatalogCard = (props: CatalogCardProps) => {
-    const { characterId } = props
+    const { character } = props
     const { charactersStore } = useDI()
-    const character = charactersStore.use(selectById(characterId))
-    const { toggleFavorite } = charactersStore.use(selectActions)
 
     return (
         <CharacterCard
             character={character}
             favoriteButton={
-                <CharacterFavoriteButton favorite={character.isFavorite} onToggleFavorite={() => toggleFavorite(characterId)} />
+                <CharacterFavoriteButton
+                    favorite={character.isFavorite.value}
+                    onToggleFavorite={() => charactersStore.toggleFavorite(character.id)}
+                />
             }
         />
     )

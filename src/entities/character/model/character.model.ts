@@ -1,37 +1,26 @@
+import { signal } from '@preact/signals-react'
 import type { CharactersDTO } from '@/shared/dto/characters.ts'
 import type { Character } from '@/entities/character/model/character.ts'
 
 export class CharacterModel {
     constructor() {}
 
-    characters: Character[] = []
-
-    public setCharacters(characters: Character[]) {
-        this.characters = characters
-    }
-
-    public toggleCharacter(id: Character['id']) {
-        const index = this.characters.findIndex((character) => character.id === id)
-        const target = this.characters[index]
-
-        if (target) {
-            this.characters[index] = { ...target, isFavorite: !target.isFavorite }
+    public clearCharacters(characters: Character[]) {
+        for (const char of characters) {
+            char.isFavorite.value = false
         }
-
-        return this.characters
     }
 
-    public clearCharacters() {
-        this.characters = this.characters.map((character) => ({
-            ...character,
-            isFavorite: false,
-        }))
-
-        return this.characters
+    public getFavoriteCharacters(characters: Character[]) {
+        return characters.filter((c) => c.isFavorite.value)
     }
 
-    public getFavoriteCharacters() {
-        return this.characters.filter((character) => character.isFavorite)
+    public toggleCharacterById(characters: Character[], id: number) {
+        const target = characters.find((c) => c.id === id)
+
+        if (!target) return
+
+        target.isFavorite.value = !target.isFavorite.value
     }
 
     public static mapDtoToCharacter = (charactersDto: CharactersDTO): Character[] => {
@@ -41,7 +30,7 @@ export class CharacterModel {
             image: result.image,
             status: result.status,
             species: result.species,
-            isFavorite: false,
+            isFavorite: signal(false),
         }))
     }
 }

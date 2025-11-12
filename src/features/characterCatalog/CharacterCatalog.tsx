@@ -1,13 +1,11 @@
 import { CatalogInput } from '@/features/characterCatalog/ui/CatalogInput.tsx'
 import { useDI } from '@/features/characterCatalog/di.ts'
 import { CatalogList } from '@/features/characterCatalog/ui/CatalogList.tsx'
+import { Show } from '@preact/signals-react/utils'
 import { Spinner } from '@/shared/ui/spinner.tsx'
-import { selectIsError, selectIsLoading } from '@/entities/character/store/characters.selectors.ts'
 
 export const CharacterCatalog = () => {
     const { charactersStore } = useDI()
-    const isCharactersError = charactersStore.use(selectIsError)
-    const isCharactersLoading = charactersStore.use(selectIsLoading)
 
     return (
         <div className='p-4'>
@@ -15,9 +13,16 @@ export const CharacterCatalog = () => {
                 <CatalogInput />
             </div>
 
-            {isCharactersLoading && <Spinner className='flex justify-center mx-auto mt-5' />}
+            <Show when={charactersStore.isCharactersLoading}>
+                <Spinner className='flex justify-center mx-auto mt-5' />
+            </Show>
 
-            {isCharactersError ? <div className='text-sm text-muted-foreground mt-4'>Таких персонажей нет</div> : <CatalogList />}
+            <Show
+                when={charactersStore.characters}
+                fallback={<div className='text-sm text-muted-foreground mt-4'>Таких персонажей нет</div>}
+            >
+                <CatalogList />
+            </Show>
         </div>
     )
 }
