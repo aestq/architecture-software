@@ -2,12 +2,11 @@ import { CharacterList } from '@/entities/character/ui/CharacterList.tsx'
 import { CharacterCard } from '@/entities/character/ui/CharacterCard.tsx'
 import { CharacterFavoriteButton } from '@/entities/character/ui/CharacterFavoriteButton.tsx'
 import { selectActions, selectFavorites } from '@/entities/character/store/characters.selectors.ts'
-import { getFeatureLocator } from '@/pages/FavoritesPage/useFeatureLocator.ts'
 import { useShallow } from 'zustand/react/shallow'
+import { useService } from '@/app/locator/Service.provider.tsx'
 
-const charactersStore = getFeatureLocator('CHARACTERS_STORE')
-
-export function FavoritesPage() {
+export function FavoritesPageContent() {
+    const charactersStore = useService('CHARACTERS_STORE')
     const favorites = charactersStore.use(useShallow(selectFavorites))
     const { clearFavorites, toggleFavorite } = charactersStore.use(selectActions)
 

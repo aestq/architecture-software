@@ -19,9 +19,9 @@ export const container = new Container({
     }),
 } as const)
 
-type ServiceKey = ReturnType<typeof container.getKeys>[number]
+export type ServiceKey = ReturnType<typeof container.getKeys>[number]
 
-function getLocator<T extends ServiceKey>(token: T): ReturnType<typeof container.get<T>> {
+export function getLocator<T extends ServiceKey>(token: T): ReturnType<typeof container.get<T>> {
     return container.get(token)
 }
 

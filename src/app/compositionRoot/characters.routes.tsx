@@ -1,7 +1,7 @@
 import { Outlet, type RouteObject } from 'react-router-dom'
 import { ROUTES } from '@/shared/consts/router.ts'
-import { CharactersPage } from '@/pages/CharactersPage/CharactersPage.tsx'
-import { FavoritesPage } from '@/pages/FavoritesPage/FavoritesPage.tsx'
+import { CharactersPage } from '@/pages/CharactersPage'
+import { FavoritesPage } from '@/pages/FavoritesPage'
 
 export const charactersRoutes: RouteObject = {
     element: <Outlet />,
